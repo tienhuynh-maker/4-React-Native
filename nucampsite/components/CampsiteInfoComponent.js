@@ -4,16 +4,19 @@ import { Card, Rating, Input, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postComment } from '../redux/ActionCreators';
-
-const mapDispatchToProps = {
-    postComment: (campsiteId, rating, author, text) => postComment(campsiteId, rating, author, text)
-}
+import { postFavorite } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
     return {
         campsites: state.campsites,
-        comments: state.comments
+        comments: state.comments,
+        favorites: state.favorites
     };
+};
+
+const mapDispatchToProps = {
+    postFavorite: campsiteId => (postFavorite(campsiteId)),
+    postComment: (campsiteId, rating, author, text) => postComment(campsiteId, rating, author, text)
 };
 
 function RenderCampsite(props) {
@@ -96,8 +99,8 @@ class CampsiteInfo extends Component {
         };
     }
 
-    markFavorite() {
-        this.setState({ favorite: true });
+    markFavorite(campsiteId) {
+        this.props.postFavorite(campsiteId);
     }
 
     toggleModal() {
@@ -130,8 +133,8 @@ class CampsiteInfo extends Component {
             <ScrollView>
                 <RenderCampsite 
                     campsite={campsite}
-                    favorite={this.state.favorite}
-                    markFavorite={() => this.markFavorite()}
+                    favorite={this.props.favorites.includes(campsiteId)}
+                    markFavorite={() => this.markFavorite(campsiteId)}
                     onShowModal={() => this.toggleModal()}
                 />
                 <RenderComments comments={comments} />
