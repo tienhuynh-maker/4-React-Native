@@ -3,21 +3,46 @@ import { Text, View, ScrollView, FlatList, Button, Modal, StyleSheet } from 'rea
 import { Card, Rating, Input, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
-import { postComment } from '../redux/ActionCreators';
-import { postFavorite } from '../redux/ActionCreators';
+import { postFavorite ,postComment } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
     return {
         campsites: state.campsites,
         comments: state.comments,
         favorites: state.favorites
-    };
-};
+    }
+}
 
 const mapDispatchToProps = {
     postFavorite: campsiteId => (postFavorite(campsiteId)),
-    postComment: (campsiteId, rating, author, text) => postComment(campsiteId, rating, author, text)
-};
+    postComment: (campsiteId, rating, author, text) => (postComment(campsiteId, rating, author, text))
+}
+
+function RenderComments({ comments }) {
+    const renderCommentItem = ({ item }) => {
+        return (
+            <View style={{ margin: 10 }}>
+                <Text style={{ fontSize: 14 }}>{item.text}</Text>
+                <Rating
+                    style={{alignItems: 'flex-start', paddingVertical: '5%'}}
+                    startingValue={item.rating}
+                    imageSize={10}
+                    readonly={true}
+                />
+                <Text style={{ fontSize: 12 }}>{`-- ${item.author}, ${item.date}`}</Text>
+            </View>
+        );
+    };
+    return (
+        <Card title='Comments'>
+            <FlatList
+                data={comments}
+                renderItem={renderCommentItem}
+                keyExtractor={item => item.id.toString()}
+            />
+        </Card>
+    );
+}
 
 function RenderCampsite(props) {
 
@@ -58,34 +83,6 @@ function RenderCampsite(props) {
     }
     return <View />;
 }
-
-function RenderComments({ comments }) {
-    const renderCommentItem = ({ item }) => {
-        return (
-            <View style={{ margin: 10 }}>
-                <Text style={{ fontSize: 14 }}>{item.text}</Text>
-                <Rating
-                    style={{alignItems: 'flex-start', paddingVertical: '5%'}}
-                    startingValue={item.rating}
-                    imageSize={10}
-                    readonly={true}
-                />
-                <Text style={{ fontSize: 12 }}>{`-- ${item.author}, ${item.date}`}</Text>
-            </View>
-        );
-    };
-
-    return (
-        <Card title='Comments'>
-            <FlatList
-                data={comments}
-                renderItem={renderCommentItem}
-                keyExtractor={item => item.id.toString()}
-            />
-        </Card>
-    );
-}
-
 class CampsiteInfo extends Component {
 
     constructor(props) {
@@ -108,7 +105,7 @@ class CampsiteInfo extends Component {
     }
 
     handleComment(campsiteId) {
-        postComment(campsiteId);
+        postComment(campsiteId, this.state.rating, this.state.author, this.state.text);
         this.toggleModal();
     }
 
@@ -163,13 +160,14 @@ class CampsiteInfo extends Component {
                             placeholder="Comment"
                             leftIcon={{ type: 'font-awesome', name: 'comment-o' }}
                             leftIconContainerStyle={{ paddingRight: 10 }}
-                            onChangeText={comment => this.setState({ comment: comment })}
+                            onChangeText={text => this.setState({ text: text })}
                         />
                         <Button
                             title='Submit'
                             color='#5637DD'
                             onPress={() => {
-                                this.handleComment(campsiteId, this.resetForm());
+                                this.handleComment(campsiteId);
+                                this.resetForm();
                             }}
                         />
                         <View style={{ margin: 10 }}>
