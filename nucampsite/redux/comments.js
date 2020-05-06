@@ -1,4 +1,4 @@
-import * as ActionTypes from './ActionTypes';
+import * as ActionTypes from '../redux/ActionTypes';
 
 export const comments = (state = {
     errMess: null,
@@ -10,8 +10,8 @@ export const comments = (state = {
         case ActionTypes.COMMENTS_FAILED:
             return { ...state, errMess: action.payload };
         case ActionTypes.ADD_COMMENT:
-            const comment = action.payload;
-            return { ...state, errMess: null, comments: state.comments.concat(comment) };
+            action.payload.id = state.comments.length;
+            return { ...state, errMess: null, comments: state.comments.concat(action.payload) };
         default:
             return state;
     }

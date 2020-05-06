@@ -105,7 +105,7 @@ class CampsiteInfo extends Component {
     }
 
     handleComment(campsiteId) {
-        postComment(campsiteId, this.state.rating, this.state.author, this.state.text);
+        this.props.postComment(campsiteId, this.state.rating, this.state.author, this.state.text);
         this.toggleModal();
     }
 
@@ -134,7 +134,7 @@ class CampsiteInfo extends Component {
                     markFavorite={() => this.markFavorite(campsiteId)}
                     onShowModal={() => this.toggleModal()}
                 />
-                <RenderComments comments={comments} />
+                <RenderComments comments={comments}/>
                 <Modal
                     animationType={'slide'}
                     transparent={false}
