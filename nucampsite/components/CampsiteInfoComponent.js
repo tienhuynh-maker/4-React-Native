@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     Text, View, ScrollView, FlatList, Button,
-    Modal, StyleSheet, Alert, PanResponder
+    Modal, StyleSheet, Alert, PanResponder, Share
 } from 'react-native';
 import { Card, Rating, Input, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -118,7 +118,7 @@ function RenderCampsite(props) {
                             color='#5637DD'
                             style={styles.cardItem}
                             raised
-                            reversed
+                            reverse
                             onPress={() => shareCampsite(campsite.name, campsite.description, baseUrl + campsite.image)}
                         />
                     </View>
